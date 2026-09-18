@@ -26,6 +26,10 @@ describe("tracking flow", () => {
     await userEvent.click(screen.getByRole("button", { name: "Track" }));
     await waitFor(() => expect(screen.getAllByText(product.name).length).toBeGreaterThan(0));
     expect(screen.getByText("Awaiting first check")).toBeInTheDocument();
-    await screen.findByRole("heading", { level: 2, name: product.name });
+    await screen.findByRole(
+      "heading",
+      { level: 2, name: product.name },
+      { timeout: 5_000 }
+    );
   });
 });

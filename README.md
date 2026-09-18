@@ -4,7 +4,11 @@ Watchtower searches INE's mock storefront, tracks selected products, checks pric
 
 The implementation is intentionally small: a React/Vite frontend, an Express API, three Supabase tables, and Playwright for the part of the store that genuinely requires browser interaction.
 
-> Screenshot placeholder: add a dashboard screenshot here after deployment.
+Production services:
+
+- Frontend: <https://ine-price-tracker-mauve.vercel.app>
+- API health: <https://ine-price-tracker-api-vfq3.onrender.com/api/health>
+- Repository: <https://github.com/mudit773/INE_SCRAPER>
 
 ## Architecture
 
@@ -19,7 +23,7 @@ cron-job.org -- every 10 minutes --> protected scrape-due endpoint
 
 The cron trigger runs every ten minutes so sleeping free-tier infrastructure gets another chance after a cold-start failure. The database only claims products whose two-hour due time has arrived.
 
-See [DESIGN.md](./DESIGN.md) for the verified storefront behavior and reliability decisions.
+See [DESIGN.md](./DESIGN.md) for the verified storefront behavior and reliability decisions, and [flow.md](./flow.md) for the end-to-end execution flow.
 
 ## Local setup
 
@@ -95,6 +99,25 @@ The Playwright Docker image includes Chromium and its Linux dependencies. Render
 3. Set `VITE_API_BASE_URL=https://<render-service>/api`.
 4. Deploy, then update Render's `FRONTEND_ORIGIN` to the final Vercel origin and redeploy the backend.
 
+### Current deployment follow-up
+
+The Render API is healthy and connected to Supabase. The corrected Vercel deployment is publicly reachable at:
+
+<https://ine-price-tracker-7yj6p1fjz-mudit14.vercel.app>
+
+The stable project domain currently serves an older frontend bundle:
+
+<https://ine-price-tracker-mauve.vercel.app>
+
+To finish the frontend deployment:
+
+1. Open the `ine-price-tracker` project in Vercel.
+2. Deploy the latest repository build to Production, or promote the deployment whose compiled JavaScript contains `https://ine-price-tracker-api-vfq3.onrender.com/api`.
+3. Open the stable domain in a private window and confirm the page loads without Vercel login.
+4. In the browser network panel, confirm requests go to `ine-price-tracker-api-vfq3.onrender.com`, not `localhost:3000`.
+5. In Render, set `FRONTEND_ORIGIN` to the stable Vercel origin and redeploy if the domain changes.
+6. Confirm both `/api/health` and `/api/products` return successful responses with the stable origin as the request `Origin`.
+
 ## Configure cron-job.org
 
 Create one job:
@@ -115,6 +138,13 @@ The normal test suite is deterministic and does not depend on the live store. It
 
 Before submission, run several scheduled cycles in the deployed environment and inspect both `price_history` and `scrape_attempts` in Supabase.
 
+## Remaining handoff tasks
+
+- Replace the stale `SUPABASE_SECRET_KEY` in the local `.env` with the current server-only Supabase secret if local API/database testing is required. Do not commit `.env` or expose this value to Vercel.
+- Run `npm run smoke:store -- monitor` from a network where the mock store is reachable. A local network failure does not prove the scraper is broken.
+- Run `npm run scrape:headed -- --product 1` and record the visible reveal interaction, retry behavior, and final validated observation. Add the recording URL below.
+- After the stable Vercel domain serves the corrected bundle, run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`, then push the final commit.
+
 ## Free-tier limitations
 
 - Render can sleep between requests, so the first cron call can be slow.
@@ -124,6 +154,8 @@ Before submission, run several scheduled cycles in the deployed environment and 
 
 ## Submission links
 
-- Live site: `ADD_AFTER_VERCEL_DEPLOYMENT`
-- Public repository: `ADD_AFTER_GITHUB_PUSH`
+- Live site: <https://ine-price-tracker-mauve.vercel.app> (finish the deployment follow-up above first)
+- Corrected deployment for verification: <https://ine-price-tracker-7yj6p1fjz-mudit14.vercel.app>
+- Backend health: <https://ine-price-tracker-api-vfq3.onrender.com/api/health>
+- Public repository: <https://github.com/mudit773/INE_SCRAPER>
 - Headed-run recording: `ADD_AFTER_RECORDING`
