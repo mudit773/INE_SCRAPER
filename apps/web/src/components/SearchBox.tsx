@@ -18,7 +18,7 @@ export function SearchBox({ onTracked }: { onTracked: () => Promise<void> }) {
     const timer = window.setTimeout(async () => {
       setMessage("Searching the mock store…");
       try {
-        const response = await api.search(query.trim());
+        const response = await api.search(query.trim(), { signal: controller.signal });
         if (!controller.signal.aborted) {
           setResults(response.items);
           setMessage(response.items.length ? "" : "No matching products found.");

@@ -59,9 +59,18 @@ export async function searchStore(query: string): Promise<StoreProduct[]> {
     .slice(0, 20);
 }
 
+export function imageUrlFromStorePayload(data: Record<string, unknown>): string | null {
+  for (const key of ["imageUrl", "image_url", "image"]) {
+    const value = data[key];
+    if (typeof value === "string" && /^https?:\/\//.test(value)) return value;
+  }
+  return null;
+}
+
 export async function getStoreProduct(id: string): Promise<StoreProduct> {
   if (!/^\d+$/.test(id)) throw new AppError("INVALID_PRODUCT", "Invalid store product ID.", 400);
-  return storeJson<StoreProduct>(`/api/product/${id}`);
+  const raw = await storeJson<StoreProduct & Record<string, unknown>>(`/api/product/${id}`);
+  return { ...raw, image_url: imageUrlFromStorePayload(raw) };
 }
 
 export function productUrl(id: string): string {

@@ -12,7 +12,8 @@ export async function runProductScrape(
   repository: ProductRepository,
   product: TrackedProduct,
   trigger: ScrapeTrigger,
-  browser = undefined as Awaited<ReturnType<typeof chromium.launch>> | undefined
+  browser = undefined as Awaited<ReturnType<typeof chromium.launch>> | undefined,
+  retryOptions: { delaysMs?: number[]; sleep?: (milliseconds: number) => Promise<void> } = {}
 ): Promise<RunResult> {
   const runId = randomUUID();
   let attempts = 0;
@@ -26,6 +27,7 @@ export async function runProductScrape(
         return scrapeProduct(product.source_product_id, { browser });
       },
       {
+        ...retryOptions,
         onFailure: async ({ error, willRetry }) => {
           if (currentAttempt) await repository.finishFailedAttempt(currentAttempt, willRetry ? "retried" : "failed", error);
         }

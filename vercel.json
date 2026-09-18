@@ -2,5 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build -w @tracker/web",
   "outputDirectory": "apps/web/dist",
-  "framework": "vite"
+  "framework": "vite",
+  "build": {
+    "env": {
+      "VITE_API_BASE_URL": "https://ine-price-tracker-api-vfq3.onrender.com/api"
+    }
+  }
 }

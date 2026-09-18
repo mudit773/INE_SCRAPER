@@ -25,6 +25,7 @@ export class ProductRepository {
         source_product_id: String(product.id),
         url: productUrl(String(product.id)),
         name: product.name,
+        image_url: product.image_url ?? null,
         active: true,
         next_scrape_at: new Date().toISOString()
       }, { onConflict: "source_product_id" })
@@ -43,9 +44,14 @@ export class ProductRepository {
     })));
   }
 
-  async get(id: string): Promise<TrackedProduct> {
+  async get(id: string): Promise<TrackedProduct & { latestPrice: PricePoint | null; latestAttempt: ScrapeAttempt | null }> {
     const { data, error } = await this.db.from("tracked_products").select("*").eq("id", id).maybeSingle();
-    return requireData(data as TrackedProduct | null, error);
+    const product = requireData(data as TrackedProduct | null, error);
+    return {
+      ...product,
+      latestPrice: await this.latestPrice(product.id),
+      latestAttempt: await this.latestAttempt(product.id)
+    };
   }
 
   async untrack(id: string): Promise<void> {

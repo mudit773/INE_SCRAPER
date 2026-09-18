@@ -6,6 +6,7 @@ export type StoreProduct = {
   category: string;
   sku: string;
   description: string;
+  image_url?: string | null;
 };
 
 export type TrackedProduct = {
