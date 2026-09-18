@@ -1,0 +1,23 @@
+{
+  "name": "ine-price-tracker",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @tracker/api\" \"npm run dev -w @tracker/web\"",
+    "lint": "eslint .",
+    "typecheck": "npm run typecheck -w @tracker/api && npm run typecheck -w @tracker/web",
+    "test": "npm test -w @tracker/api && npm test -w @tracker/web",
+    "build": "npm run build -w @tracker/api && npm run build -w @tracker/web",
+    "scrape:headed": "npm run scrape:headed -w @tracker/api --",
+    "smoke:store": "npm run smoke:store -w @tracker/api --"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.35.0",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.44.0"
+  }
+}

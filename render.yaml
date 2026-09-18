@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ine-price-tracker-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: CRON_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
