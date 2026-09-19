@@ -156,8 +156,11 @@ INE/
 │           ├── test-setup.ts       # Vitest DOM matchers and test environment setup
 │           ├── types.ts            # Frontend data types and interfaces
 │           └── components/
+│               ├── NotificationBell.tsx # Bell icon notification dropdown for price-drops and back-in-stock
+│               ├── PriceHistoryPage.tsx # Dedicated page for price & stock history and per-product scrape log
 │               ├── ProductCard.tsx # Individual tracked product overview card
 │               ├── ProductDetail.tsx # History chart, observation table, and attempt log
+│               ├── ScrapeActivity.tsx # Global scrape audit log feed & metrics
 │               └── SearchBox.tsx   # Debounced live search component
 ├── docs/
 │   └── PROJECT_DOCUMENTATION.md    # Comprehensive project documentation
