@@ -37,7 +37,7 @@ export async function runProductScrape(
     await repository.complete(product, currentAttempt, observation);
     return { productId: product.id, ok: true, attempts };
   } catch (error) {
-    try { await repository.release(product.id); } catch { /* the original failure is more useful to the caller */ }
+    try { await repository.release(product.id); } catch { void 0; }
     return { productId: product.id, ok: false, attempts, error: error instanceof Error ? error.message : String(error) };
   }
 }

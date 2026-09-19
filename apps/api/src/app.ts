@@ -73,6 +73,11 @@ export function createApp(config: AppConfig, repository: ProductRepository) {
     response.json({ items: await repository.attempts(productId, query.limit, query.before) });
   }));
 
+  app.get("/api/activity", asyncRoute(async (request, response) => {
+    const query = pagination.parse(request.query);
+    response.json({ items: await repository.globalAttempts(query.limit, query.before) });
+  }));
+
   const requireCron = (request: Request, response: Response, next: NextFunction) => {
     if (!authorized(request.headers.authorization, config.CRON_SECRET)) {
       response.status(401).json({ error: { code: "UNAUTHORIZED", message: "A valid cron token is required." } });

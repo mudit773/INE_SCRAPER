@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { AppError } from "./errors.js";
 import { getStoreProduct, productUrl } from "./store-api.js";
-import type { PricePoint, ScrapeAttempt, ScrapeTrigger, ScrapedObservation, TrackedProduct } from "./types.js";
+import type { GlobalAttempt, PricePoint, ScrapeAttempt, ScrapeTrigger, ScrapedObservation, TrackedProduct } from "./types.js";
 
 function requireData<T>(data: T | null, error: { message: string } | null): T {
   if (error) throw new AppError("DATABASE_ERROR", "The database request failed.", 503, true);
@@ -71,6 +71,25 @@ export class ProductRepository {
     if (before) query = query.lt("started_at", before);
     const { data, error } = await query;
     return requireData(data as ScrapeAttempt[] | null, error);
+  }
+
+  async globalAttempts(limit: number, before?: string): Promise<GlobalAttempt[]> {
+    let query = this.db
+      .from("scrape_attempts")
+      .select("*, tracked_products(name, source_product_id)")
+      .order("started_at", { ascending: false })
+      .limit(limit);
+    if (before) query = query.lt("started_at", before);
+    const { data, error } = await query;
+    const rows = requireData(data as Array<Record<string, unknown>> | null, error);
+    return rows.map((row) => {
+      const product = row.tracked_products as { name?: string; source_product_id?: string } | null;
+      return {
+        ...(row as unknown as ScrapeAttempt),
+        product_name: product?.name ?? "Unknown Product",
+        source_product_id: product?.source_product_id ?? null
+      };
+    });
   }
 
   async claimDue(limit: number): Promise<TrackedProduct[]> {

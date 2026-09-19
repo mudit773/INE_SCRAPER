@@ -1,9 +1,3 @@
-/**
- * Read-only checks against a deployed API (default: production Render service).
- * Usage: npm run production:check -w @tracker/api
- * Optional env: PRODUCTION_API_BASE, PRODUCTION_FRONTEND_ORIGIN
- */
-
 const API_BASE = process.env.PRODUCTION_API_BASE ?? "https://ine-price-tracker-api-vfq3.onrender.com/api";
 const FRONTEND_ORIGIN = process.env.PRODUCTION_FRONTEND_ORIGIN ?? "https://ine-price-tracker-mauve.vercel.app";
 

@@ -2,12 +2,14 @@ import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { api } from "./api";
 import { ProductCard } from "./components/ProductCard";
 import { SearchBox } from "./components/SearchBox";
+import { ScrapeActivity } from "./components/ScrapeActivity";
 import type { TrackedProduct } from "./types";
 import "./styles.css";
 
 const ProductDetail = lazy(() => import("./components/ProductDetail").then((module) => ({ default: module.ProductDetail })));
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState<"dashboard" | "activity">("dashboard");
   const [products, setProducts] = useState<TrackedProduct[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [message, setMessage] = useState("Loading tracked products…");
@@ -36,13 +38,29 @@ export default function App() {
       <header className="site-header"><a href="#main" className="brand"><span>W</span> Watchtower</a><p>INE mock-store monitor</p></header>
       <main id="main">
         <section className="hero"><p className="eyebrow">Reliable price tracking</p><h1>Know what changed,<br />and when.</h1><p>Watch prices and availability on INE’s assignment store. Every check—including every failure—is recorded.</p></section>
-        <SearchBox onTracked={refresh} />
-        <section className="products-section" aria-labelledby="tracked-title">
-          <div className="section-heading"><div><p className="eyebrow">Dashboard</p><h2 id="tracked-title">Tracked products</h2></div><button className="text-button" onClick={() => void refresh()}>Refresh dashboard</button></div>
-          {message && <p className="empty-state" role="status">{message}</p>}
-          <div className="product-grid">{products.map((product) => <ProductCard key={product.id} product={product} selected={product.id === selectedId} onSelect={() => setSelectedId(product.id)} onUntrack={() => untrack(product.id)} />)}</div>
-        </section>
-        {selected && <Suspense fallback={<p className="empty-state">Loading product history…</p>}><ProductDetail product={selected} /></Suspense>}
+        
+        <nav className="nav-tabs" aria-label="Main Navigation">
+          <button className={`nav-tab ${activeTab === "dashboard" ? "active" : ""}`} onClick={() => setActiveTab("dashboard")}>
+            Dashboard & Products
+          </button>
+          <button className={`nav-tab ${activeTab === "activity" ? "active" : ""}`} onClick={() => setActiveTab("activity")}>
+            Scrape Activity Feed
+          </button>
+        </nav>
+
+        {activeTab === "dashboard" && (
+          <>
+            <SearchBox onTracked={refresh} />
+            <section className="products-section" aria-labelledby="tracked-title">
+              <div className="section-heading"><div><p className="eyebrow">Dashboard</p><h2 id="tracked-title">Tracked products</h2></div><button className="text-button" onClick={() => void refresh()}>Refresh dashboard</button></div>
+              {message && <p className="empty-state" role="status">{message}</p>}
+              <div className="product-grid">{products.map((product) => <ProductCard key={product.id} product={product} selected={product.id === selectedId} onSelect={() => setSelectedId(product.id)} onUntrack={() => untrack(product.id)} />)}</div>
+            </section>
+            {selected && <Suspense fallback={<p className="empty-state">Loading product history…</p>}><ProductDetail product={selected} /></Suspense>}
+          </>
+        )}
+
+        {activeTab === "activity" && <ScrapeActivity />}
       </main>
       <footer><span>Watchtower</span><span>Built for the INE Software Engineer Intern assignment.</span></footer>
     </>

@@ -57,3 +57,8 @@ export type PricePoint = {
   in_stock: boolean;
   observed_at: string;
 };
+
+export type GlobalAttempt = ScrapeAttempt & {
+  product_name?: string | null;
+  source_product_id?: string | null;
+};

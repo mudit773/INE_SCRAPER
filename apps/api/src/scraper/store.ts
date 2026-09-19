@@ -34,7 +34,7 @@ async function scrapePage(page: Page, sourceProductId: string): Promise<ScrapedO
   const layoutPromise = new Promise<Layout>((resolve) => {
     page.on("response", async (response) => {
       if (response.url().endsWith("/api/layout") && response.ok()) {
-        try { resolve((await response.json()) as Layout); } catch { /* the timeout below reports this */ }
+        try { resolve((await response.json()) as Layout); } catch { void 0; }
       }
     });
   });

@@ -526,6 +526,31 @@ All API endpoints are prefixed with `/api`. Standard responses are returned as `
   }
   ```
 
+#### `GET /api/activity`
+- **Description:** Fetches global scrape activity across all tracked products enriched with product name and source product ID.
+- **Query Parameters:** `limit` (1–200, default: 50), `before` (ISO 8601 string, optional cursor).
+- **Success Response (200 OK):**
+  ```json
+  {
+    "items": [
+      {
+        "id": "c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a33",
+        "product_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        "product_name": "Wireless Noise-Canceling Headphones",
+        "source_product_id": "1",
+        "attempt_number": 1,
+        "trigger": "scheduled",
+        "started_at": "2026-09-18T10:00:01.000Z",
+        "finished_at": "2026-09-18T10:00:05.000Z",
+        "status": "success",
+        "error_code": null,
+        "error_message": null,
+        "duration_ms": 4120
+      }
+    ]
+  }
+  ```
+
 ---
 
 ### 10.2 Protected Routes (Requires Header `Authorization: Bearer <CRON_SECRET>`)

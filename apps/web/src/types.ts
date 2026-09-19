@@ -24,6 +24,12 @@ export type Attempt = {
   duration_ms: number | null;
 };
 
+export type GlobalAttempt = Attempt & {
+  product_name?: string | null;
+  source_product_id?: string | null;
+  trigger?: "scheduled" | "manual";
+};
+
 export type TrackedProduct = {
   id: string;
   source_product_id: string;
