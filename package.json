@@ -2,7 +2,7 @@
   "name": "ine-price-tracker",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "workspaces": ["apps/*"],
   "scripts": {
     "dev": "concurrently -n api,web -c blue,green \"npm run dev -w @tracker/api\" \"npm run dev -w @tracker/web\"",
