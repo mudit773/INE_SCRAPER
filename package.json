@@ -11,6 +11,7 @@
     "test": "npm test -w @tracker/api && npm test -w @tracker/web",
     "build": "npm run build -w @tracker/api && npm run build -w @tracker/web",
     "scrape:headed": "npm run scrape:headed -w @tracker/api --",
+    "scrape:headed-demo": "npm run scrape:headed-demo -w @tracker/api",
     "smoke:store": "npm run smoke:store -w @tracker/api --",
     "production:check": "npm run production:check -w @tracker/api"
   },

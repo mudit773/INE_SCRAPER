@@ -10,6 +10,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "scrape:headed": "tsx src/scripts/headed.ts",
+    "scrape:headed-demo": "tsx src/scripts/headed-demo.ts",
     "smoke:store": "tsx src/scripts/store-smoke.ts",
     "production:check": "tsx src/scripts/production-check.ts"
   },
