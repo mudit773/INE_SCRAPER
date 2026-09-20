@@ -92,6 +92,11 @@ export function createApp(config: AppConfig, repository: ProductRepository) {
     response.status(result.ok ? 200 : 502).json(result);
   }));
 
+  app.get("/api/activity", asyncRoute(async (request, response) => {
+    const query = pagination.parse(request.query);
+    response.json({ items: await repository.globalAttempts(query.limit, query.before) });
+  }));
+
   app.use((_request, response) => response.status(404).json({ error: { code: "NOT_FOUND", message: "Route not found." } }));
   app.use((error: unknown, _request: Request, response: Response, _next: NextFunction) => {
     void _next;
